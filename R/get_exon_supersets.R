@@ -44,9 +44,17 @@ get_exon_supersets <-
           warning("Neither gene_id nor gene field found in the data. Will attempt to infer from GFF structure.")
         }
 
-        tr_ids <- unique(unlist(exon_supersets[exon_supersets$type == 'exon']$Parent))
-        tr2gene <- setNames(unlist(exon_supersets[exon_supersets$ID %in% tr_ids]$Parent),
-                            unlist(exon_supersets[exon_supersets$ID %in% tr_ids]$ID))
+        tr_ids <- unique(unlist(exon_supersets[exon_supersets$type == "exon"]$Parent))
+
+        tr_data <- exon_supersets[exon_supersets$ID %in% tr_ids]
+        valid_idx <- !sapply(tr_data$Parent, is.null) &
+          sapply(tr_data$Parent, length) > 0
+
+        tr2gene <- setNames(
+          unlist(tr_data$Parent[valid_idx]),
+          unlist(tr_data$ID[valid_idx])
+        )
+
         exon_supersets[exon_supersets$type == 'exon']$gene_id <-
           tr2gene[unlist(exon_supersets[exon_supersets$type == 'exon']$Parent)]
       }
