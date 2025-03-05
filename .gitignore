@@ -11,3 +11,4 @@ singularity/
 .RData
 simulation*/
 .aider*
+.editorconfig
