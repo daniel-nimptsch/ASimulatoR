@@ -284,6 +284,22 @@ simulate_alternative_splicing <-
     # message('start simulation with polyester:')
     # do.call(simulate_experiment, params)
 
+    ### Write additional output files ----
+    message('Saving exon junction table and fold changes to CSV files...')
+    # Write exon junction table to CSV
+    if (!is.null(params$exon_junction_table)) {
+      ejt_file <- file.path(outdir, 'exon_junction_table.csv')
+      data.table::fwrite(params$exon_junction_table, ejt_file)
+      message(sprintf('Exon junction table saved to %s', ejt_file))
+    }
+
+    # Write fold changes to CSV
+    if (!is.null(params$fold_changes)) {
+      fc_file <- file.path(outdir, 'fold_changes.csv')
+      utils::write.csv(params$fold_changes, fc_file, row.names = FALSE)
+      message(sprintf('Fold changes saved to %s', fc_file))
+    }
+
     # Restore whatever RNG the user had set before running this function
     RNGkind(old_rng[1], old_rng[2])
     invisible(NULL)
