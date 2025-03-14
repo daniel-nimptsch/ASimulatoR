@@ -287,11 +287,11 @@ simulate_alternative_splicing <-
     ### Write additional output files ----
     # message('Saving exon junction table and fold changes to CSV files...')
     # Write exon junction table to CSV
-    if (!is.null(params$exon_junction_table)) {
-      ejt_file <- file.path(outdir, 'exon_junction_table.csv')
-      data.table::fwrite(params$exon_junction_table, ejt_file)
-      message(sprintf('Exon junction table saved to %s', ejt_file))
-    }
+    # if (!is.null(params$exon_junction_table)) {
+    #   ejt_file <- file.path(outdir, 'exon_junction_table.csv')
+    #   data.table::fwrite(params$exon_junction_table, ejt_file)
+    #   message(sprintf('Exon junction table saved to %s', ejt_file))
+    # }
 
     # # Write fold changes to CSV
     # if (!is.null(params$fold_changes)) {
