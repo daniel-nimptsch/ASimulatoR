@@ -99,26 +99,26 @@
   } else stop('Event probabilites have to be provided as named list/vector and each entry must be a probability.')
 }
 
-#' Simulate RNA-seq experiment with splicing variants 
+#' Simulate RNA-seq experiment with splicing variants
 #'
 #' Firstly, exon supersets are created by joining all exons of a gene from a gtf/gff file.
 #' Next, splicing variants are created with documentation and event annotation based on the users input.
-#' Finally, fastq files containing RNA-seq reads from the splice variants and the real exon and junction coverage 
+#' Finally, fastq files containing RNA-seq reads from the splice variants and the real exon and junction coverage
 #' are created using a modified version of the polyester R package available on https://github.com/biomedbigdata/polyester.
 #'
-#' @param input_dir Character path to directory containing the gtf/gff file 
-#' from which splice variants are created and genome fasta files with 
+#' @param input_dir Character path to directory containing the gtf/gff file
+#' from which splice variants are created and genome fasta files with
 #' one file per chromosome i.e. <chr_name>.fa passed to polyester.
 #' @param outdir character, path to folder where simulated reads and all
 #'   annotations should be written, with \strong{no} slash at the end. By default,
 #'   reads are written to current working directory.
 #' @param event_probs Named list/vector containing numerics corresponding
-#'  to the probabilites to create the event(-combination). 
-#'  If \code{probs_as_freq} is \code{TRUE} \code{event_probs} correspond 
-#'  to the relative frequency of occurences for the event (combination) and 
+#'  to the probabilites to create the event(-combination).
+#'  If \code{probs_as_freq} is \code{TRUE} \code{event_probs} correspond
+#'  to the relative frequency of occurences for the event (combination) and
 #'  in this case the sum of all frequencies has to be <=1.
 #'  No default, must not be \code{NULL}, except if \code{preset} is given.
-#' @param preset if you want to use preset parameters one of 
+#' @param preset if you want to use preset parameters one of
 #' 'event_partition', 'experiment_bias', 'event_combination_2'.
 #' Check \code{?\link{presets}} for more information
 #' @param ncores the number of cores to be utilized for parallel generation
@@ -127,29 +127,29 @@
 #' @param ... any of several other arguments that can be used to add nuance
 #'   to the simulation and splice variant creation. See details.
 #'
-#' @details Reads are simulated from a GTF file which is produced by 
+#' @details Reads are simulated from a GTF file which is produced by
 #'   \code{\link{create_splicing_variants_and_annotation}} plus DNA
 #'   sequences.
 #'
 #'   Several optional parameters can be passed to this function to adjust the
 #'   simulation. For polyester parameters refer to \code{\link{polyester::simulate_experiment}}:
-#'   
+#'
 #'   \itemize{
-#'   \item \code{novel_variants}: Numeric value between 0 and 1 indicating the percentage 
+#'   \item \code{novel_variants}: Numeric value between 0 and 1 indicating the percentage
 #'   of splicing variants that will not be written to an additional gtf file splicing_variants_novel.gtf.
 #'   \item \code{write_gff}: Additionally to the gtf file containing the splice variants,
-#'   a gff3 file with the same content will be printed to the outdir. 
+#'   a gff3 file with the same content will be printed to the outdir.
 #'   Default \code{TRUE}
-#'   \item \code{max_genes}: The maximum number of genes/exon supersets to be included 
-#'   in the process of splice variant creation. 
+#'   \item \code{max_genes}: The maximum number of genes/exon supersets to be included
+#'   in the process of splice variant creation.
 #'   Default \code{NULL} which means that all available exon supersets will be used.
 #'   \strong{This is a computation heavy default and you might want to adjust it!}
-#'   \item \code{exon_junction_coverage}: Should the real coverage of exons, junctions 
+#'   \item \code{exon_junction_coverage}: Should the real coverage of exons, junctions
 #'   and retained introns be written into a additional file.
 #'   Default \code{TRUE}
-#'   \item \code{multi_events_per_exon}: Should it be possible to have more than one AS event 
+#'   \item \code{multi_events_per_exon}: Should it be possible to have more than one AS event
 #'   at the same exon if multiple variants are created for the same exon superset?
-#'   !If this option is set to \code{TRUE}, there may occur unforeseen AS events 
+#'   !If this option is set to \code{TRUE}, there may occur unforeseen AS events
 #'   that are not documented in the event_annotation file!.
 #'   Default \code{FALSE}
 #'   \item \code{probs_as_freq}: Should \code{event_probs} be treated as relative frequencies instead of probabilities?
@@ -160,7 +160,7 @@
 #'
 #'   Parameters passed to polyester that we assigned different defaults to than in \code{\link{simulate_experiment}}:
 #'   \itemize{
-#'   \item \code{fold_changes}: Currently, ASimulatoR introduces random isoform switches. 
+#'   \item \code{fold_changes}: Currently, ASimulatoR introduces random isoform switches.
 #'   Those can be retraced in the sim_tx_info.txt file written by polyester.
 #'   We plan on improving this in the future.
 #'   \item \code{strand_specific}: Strand-specific simulation (1st read forward strand,
@@ -169,21 +169,21 @@
 #'   \item \code{frag_GC_bias}: A sample-specific GC content bias on the fragment level. Currently not supported in ASimulatoR: always 'none'.
 #'   \item \code{verbose}: Should progress messages be printed during the sequencing process? Default \code{TRUE}.
 #'   \item \code{exon_junction_coverage}: Should the coverage of exons, junctions and retained introns be determined? Default \code{TRUE}.
-#'   \item \code{exon_junction_table}: If \code{exon_junction_coverage=TRUE} a \code{data.table} produced by \code{\link{create_splicing_variants_and_annotation}} 
+#'   \item \code{exon_junction_table}: If \code{exon_junction_coverage=TRUE} a \code{data.table} produced by \code{\link{create_splicing_variants_and_annotation}}
 #'   to determine exon and intron coverage.
 #'   }
 #'
 #' @references
-#'   Alyssa C. Frazee, Andrew E. Jaffe, Ben Langmead, Jeffrey T. Leek, 
-#'   Polyester: simulating RNA-seq datasets with differential transcript expression, 
-#'   Bioinformatics, Volume 31, Issue 17, 1 September 2015, Pages 2778–2784, 
+#'   Alyssa C. Frazee, Andrew E. Jaffe, Ben Langmead, Jeffrey T. Leek,
+#'   Polyester: simulating RNA-seq datasets with differential transcript expression,
+#'   Bioinformatics, Volume 31, Issue 17, 1 September 2015, Pages 2778–2784,
 #'   https://doi.org/10.1093/bioinformatics/btv272
 #'
 #'
 #' @return No return, but simulated reads, a simulation info file,
 #'   an alternative splicing event annotation and exon and junction coverages are written
 #'   to \code{outdir}.
-#' 
+#'
 #' @export
 #' @import data.table
 #' @importFrom stats runif
@@ -202,16 +202,16 @@ simulate_alternative_splicing <-
     # check parameters and compatibility
     ncores <- .check_cores(ncores)
     params <- .check_input_dir(input_dir)
-    
+
     preset_res <- assign_preset(preset, event_probs)
-    
+
     extras <- list(...)
-    
-    extras_presets <- .check_parameters(c(extras, 
+
+    extras_presets <- .check_parameters(c(extras,
                                           preset_res[!(names(preset_res) %in% names(extras))]))
-    params <- c(extras_presets, 
+    params <- c(extras_presets,
                 params)
-    
+
     # means that we have preset event_probs
     if (is.null(event_probs)) event_probs <- params$event_probs
     event_probs <- .check_event_probs(event_probs, params$probs_as_freq)
@@ -253,14 +253,14 @@ simulate_alternative_splicing <-
       params$novel_variants
     )
 
-    
+
     tr_per_gene <- params$exon_junction_table[, .(nr_transcripts = length(unique(transcript_id))), by = gene_id]$nr_transcripts
     params$fold_changes <- do.call(rbind, lapply(tr_per_gene, function(nr_tr){
       if (nr_tr == 1)
         return(matrix(rep(1, 2), ncol = ifelse(is.null(params$num_reps), 2, length(params$num_reps))))
       else {
         nr_groups = ifelse(is.null(params$num_reps), 2, length(params$num_reps))
-        if (runif(1) < 0.5) 
+        if (runif(1) < 0.5)
           return(matrix(rep(1, nr_groups * nr_tr), nrow = nr_tr))
         m = matrix(c(2, rep(1, nr_tr - 1)))
         for (i in 2:nr_groups) {
@@ -273,7 +273,7 @@ simulate_alternative_splicing <-
         return(m)
       }
     }))
-    
+
     params$meanmodel <- T
     params$frag_GC_bias <- NULL
     params$gtf <- file.path(outdir, 'splicing_variants.gtf')
@@ -294,7 +294,7 @@ simulate_alternative_splicing <-
 # ## set parameters
 # input = '../ensembl_data/Homo_sapiens.GRCh38.99'
 # output = '../ensembl_data/Homo_sapiens.GRCh38.99_out/experiment_bias'
-# 
+#
 # ## run simulator
 # # library(ASimulatoR)
 # simulate_alternative_splicing(input_dir = input, outdir = output, preset = 'experiment_bias', max_genes = 100, seq_depth = 2e6)

@@ -13,9 +13,9 @@
 #' @importFrom pbmcapply pbmclapply
 get_exon_supersets <-
   function(gtf_path, ncores=1L, save=TRUE) {
-    
+
     ncores <- .check_cores(ncores)
-    
+
     exon_supersets_path <- sprintf('%s.exon_superset.rda', gtf_path)
     if (file.exists(exon_supersets_path)) {
       message('loading superset...')
@@ -26,24 +26,24 @@ get_exon_supersets <-
       message('importing gtf/gff...')
       exon_supersets <- rtracklayer::import(gtf_path)
       message('finished importing gtf/gff')
-      
+
       if (grepl('\\.gff3?$', gtf_path)){
         message('Found GFF: inferring gene_id for each exon...')
         exon_supersets$gene_id <- sub(pattern = "^gene:", replacement = "", x = exon_supersets$gene_id)
         tr_ids <- unique(unlist(exon_supersets[exon_supersets$type == 'exon']$Parent))
-        tr2gene <- setNames(unlist(exon_supersets[exon_supersets$ID %in% tr_ids]$Parent), 
+        tr2gene <- setNames(unlist(exon_supersets[exon_supersets$ID %in% tr_ids]$Parent),
                             unlist(exon_supersets[exon_supersets$ID %in% tr_ids]$ID))
-        exon_supersets[exon_supersets$type == 'exon']$gene_id <- 
+        exon_supersets[exon_supersets$type == 'exon']$gene_id <-
           tr2gene[unlist(exon_supersets[exon_supersets$type == 'exon']$Parent)]
       }
       message('')
-      
+
       exon_supersets <-
         exon_supersets[exon_supersets$type == 'exon']
       S4Vectors::mcols(exon_supersets) <- S4Vectors::mcols(exon_supersets)["gene_id"]
       exon_supersets <-
         split(exon_supersets, exon_supersets$gene_id)
-      
+
       message('creating superset...')
       gc()
       exon_supersets <-
