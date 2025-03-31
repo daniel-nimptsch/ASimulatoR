@@ -13,12 +13,26 @@
         warning(sprintf("found more than one gtf/gff file in input directory. using %s...", params$gtf_path))
       }
     }
-    fastas <- list.files(input_dir, pattern = '\\.fa$')
-    if (length(fastas) == 0)
-      stop(sprintf("could not find fasta files in input directory %s", input_dir))
-    params$valid_chromosomes <- sub('.fa', '', fastas)
+    fastas <- list.files(
+      input_dir,
+      pattern = "\\.f(ast)?a$|\\.fna$",
+      ignore.case = TRUE,
+      full.names = FALSE
+    )
+
+    if (length(fastas) == 0) {
+      stop(sprintf("No FASTA files found in input directory: %s", input_dir))
+    }
+
+    params$valid_chromosomes <- sub(
+      "\\.f(ast)?a$|\\.fna$",
+      "",
+      fastas,
+      ignore.case = TRUE
+    )
     message(sprintf("found the following fasta files: %s", paste(fastas, collapse = ", ")))
     message("note that splice variants will only be constructed from chromosomes that have a corresponding fasta file")
+    message(sprintf("Parsed chromosome names: %s", paste(params$valid_chromosomes, collapse = ", ")))
     message('')
     return(params)
   }
