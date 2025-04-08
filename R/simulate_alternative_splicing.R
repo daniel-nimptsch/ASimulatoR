@@ -267,24 +267,26 @@ simulate_alternative_splicing <-
       params$novel_variants
     )
 
-
     tr_per_gene <- params$exon_junction_table[, .(nr_transcripts = length(unique(transcript_id))), by = gene_id]$nr_transcripts
-    params$fold_changes <- do.call(rbind, lapply(tr_per_gene, function(nr_tr){
-      if (nr_tr == 1)
-        return(matrix(rep(1, 2), ncol = ifelse(is.null(params$num_reps), 2, length(params$num_reps))))
-      else {
-        nr_groups = ifelse(is.null(params$num_reps), 2, length(params$num_reps))
-        if (runif(1) < 0.5)
-          return(matrix(rep(1, nr_groups * nr_tr), nrow = nr_tr))
-        m = matrix(c(2, rep(1, nr_tr - 1)))
-        for (i in 2:nr_groups) {
-          c2 = sample(m[,1])
-          while (identical(m[,1], c2)) {
-            c2 <- sample(m[,1])
+    params$fold_changes <- do.call(rbind, lapply(tr_per_gene, function(nr_tr) {
+      nr_groups <- if (is.null(params$num_reps)) 2 else length(params$num_reps)
+      if (nr_tr == 1) {
+        return(matrix(1, nrow = 1, ncol = nr_groups))
+      }
+      if (runif(1) < 0.5) {
+        matrix(1, nrow = nr_tr, ncol = nr_groups)
+      } else {
+        m <- matrix(c(2, rep(1, nr_tr - 1)), ncol = 1)
+        if (nr_groups > 1) {
+          for (i in 2:nr_groups) {
+            c2 <- sample(m[, 1])
+            while (identical(m[, 1], c2)) {
+              c2 <- sample(m[, 1])
+            }
+            m <- cbind(m, c2)
           }
-          m = cbind(m, c2)
         }
-        return(m)
+        m
       }
     }))
 
