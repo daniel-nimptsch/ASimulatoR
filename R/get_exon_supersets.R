@@ -41,6 +41,7 @@ get_exon_supersets <-
 
             exon_supersets <-
                 exon_supersets[exon_supersets$type == "exon"]
+            if (length(exon_supersets) == 0) stop("No exons found in the provided GTF/GFF file")
             S4Vectors::mcols(exon_supersets) <- S4Vectors::mcols(exon_supersets)["gene_id"]
             exon_supersets <-
                 split(exon_supersets, exon_supersets$gene_id)
